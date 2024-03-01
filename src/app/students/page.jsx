@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import studentsData from "../../utils/students.json";
 import styles from "@/styles/StudentsView.module.css";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import Link from "next/link";
 
 export default function Students() {
   const [students, setStudents] = useState([]);
@@ -27,7 +28,7 @@ export default function Students() {
         setStudents(data);
       })
       .catch((error) => {
-        console.error("Error la obtener los estudiantes:", error);
+        console.error("Error al obtener los estudiantes:", error);
       });
   }, []);
 
@@ -35,7 +36,13 @@ export default function Students() {
     const fetchCourses = () => {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          resolve([...new Set(studentsData.map((student) => student.attends))]);
+          const coursesSet = new Set();
+          studentsData.forEach((student) => {
+            student.attends.forEach((course) => {
+              coursesSet.add(course);
+            });
+          });
+          resolve([...coursesSet]);
         }, 1000);
       });
     };
@@ -51,7 +58,11 @@ export default function Students() {
 
   let filteredStudents = students.filter((student) => student.name.toLowerCase().includes(search.toLowerCase()));
 
-  if (selectedCourses.length > 0) filteredStudents = filteredStudents.filter((student) => selectedCourses.includes(student.attends));
+  if (selectedCourses.length > 0) {
+    filteredStudents = filteredStudents.filter((student) => {
+      return selectedCourses.every((course) => student.attends.includes(course));
+    });
+  }
 
   const handleCourseClick = (course) => {
     if (selectedCourses.includes(course)) {
@@ -60,8 +71,6 @@ export default function Students() {
       setSelectedCourses([...selectedCourses, course]);
     }
   };
-
-  console.log("FILTERED STUDENTS >>>", filteredStudents);
 
   return (
     <ChakraProvider>
@@ -77,14 +86,13 @@ export default function Students() {
                   Filtrar por curso
                 </MenuButton>
                 <MenuList>
-                  {courses.map((attends) => (
-                    <MenuItem key={attends} onClick={() => handleCourseClick(attends)}>
-                      {attends}
+                  {courses.map((course) => (
+                    <MenuItem key={course} onClick={() => handleCourseClick(course)}>
+                      {course}
                     </MenuItem>
                   ))}
                 </MenuList>
               </Menu>
-
               {selectedCourses.map((course) => (
                 <Tag className={styles.marginLeft} key={course} size="md" borderRadius="full" colorScheme="blue">
                   <TagLabel>{course}</TagLabel>
@@ -93,7 +101,6 @@ export default function Students() {
               ))}
             </div>
           </div>
-
           <TableContainer>
             <Table size="sm">
               <Thead>
@@ -106,14 +113,16 @@ export default function Students() {
               </Thead>
               <Tbody>
                 {filteredStudents.map((student) => (
-                  <Tr key={student.name}>
+                  <Tr key={student.id}>
                     <Td>{student.name}</Td>
                     <Td>{student.email || "-"}</Td>
-                    <Td>{student.attends}</Td>
+                    <Td>{student?.attends?.length > 1 ? student.attends.join(", ") : student?.attends[0]}</Td>
                     <Td>
-                      <Button colorScheme="blue">
-                        <AddIcon />
-                      </Button>
+                      <Link href={`/students/${student.id}`}>
+                        <Button colorScheme="blue">
+                          <AddIcon />
+                        </Button>
+                      </Link>
                     </Td>
                   </Tr>
                 ))}
