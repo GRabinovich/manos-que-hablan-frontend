@@ -1,20 +1,19 @@
-"use client"
-import styles from "@/styles/Navbar.module.css"
+"use client";
 
 export const Navbar = () => {
   return (
     <nav>
-      <ul className={styles.navbar}>
-        <li className={styles.navLinks}>
+      <ul style={{ display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "rgb(200, 200, 200)" }}>
+        <li style={{ listStyleType: "none", margin: "0.5rem 1rem" }}>
           <a href="">Home</a>
         </li>
-        <li className={styles.navLinks}>
+        <li style={{ listStyleType: "none", margin: "0.5rem 1rem" }}>
           <a href="">Cursos</a>
         </li>
-        <li className={styles.navLinks}>
+        <li style={{ listStyleType: "none", margin: "0.5rem 1rem" }}>
           <a href="/students">Estudiantes</a>
         </li>
-        <li className={styles.navLinks}>
+        <li style={{ listStyleType: "none", margin: "0.5rem 1rem" }}>
           <a href="">Pagos</a>
         </li>
       </ul>

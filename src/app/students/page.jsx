@@ -4,7 +4,6 @@ import { Navbar } from "@/components/Navbar";
 import { ChakraProvider, Table, Thead, Tbody, Tfoot, Tr, Th, Td, TableContainer, Button, Input, Menu, MenuButton, MenuList, MenuItem, Tag, TagLabel, TagCloseButton, HStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import studentsData from "../../utils/students.json";
-import styles from "@/styles/StudentsView.module.css";
 import { AddIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 
@@ -77,12 +76,12 @@ export default function Students() {
       <>
         <Navbar />
         <main>
-          <h1 className={styles.studentsTitle}>Estudiantes</h1>
-          <div className={styles.displayFlexAlignCenter}>
-            <Input className={styles.marginLeft} placeholder="Buscar estudiante por nombre" htmlSize={30} width="auto" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <div className={styles.displayFlexAlignCenter}>
+          <h1 style={{ display: "flex", justifyContent: "center", alignItems: "center", fontSize: "3rem", margin: "0.5rem 0rem" }}>Estudiantes</h1>
+          <div style={{display: "flex", alignItems: "center"}}>
+            <Input style={{margin: "0 0 0 0.8rem"}} placeholder="Buscar estudiante por nombre" htmlSize={30} width="auto" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <div style={{display: "flex", alignItems: "center"}}>
               <Menu>
-                <MenuButton className={styles.marginLeft} as={Button} rightIcon={<ChevronDownIcon />}>
+                <MenuButton style={{margin: "0 0 0 0.8rem"}} as={Button} rightIcon={<ChevronDownIcon />}>
                   Filtrar por curso
                 </MenuButton>
                 <MenuList>
@@ -94,7 +93,7 @@ export default function Students() {
                 </MenuList>
               </Menu>
               {selectedCourses.map((course) => (
-                <Tag className={styles.marginLeft} key={course} size="md" borderRadius="full" colorScheme="blue">
+                <Tag style={{margin: "0 0 0 0.8rem"}} key={course} size="md" borderRadius="full" colorScheme="blue">
                   <TagLabel>{course}</TagLabel>
                   <TagCloseButton onClick={() => handleCourseClick(course)} />
                 </Tag>
