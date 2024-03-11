@@ -1,0 +1,9 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin-left: 120px;
+  margin-right: 20px;
+}
