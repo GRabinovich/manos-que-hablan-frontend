@@ -12,10 +12,12 @@ import {
   Button,
   Input,
 } from "@chakra-ui/react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { listPayments } from "@/redux/features/paymentsSlice";
 export const EditPayment = ({
   isOpenWin,
   onClose,
+
   conceptoUser,
   montoUser,
   diaPagoUser,
@@ -27,7 +29,10 @@ export const EditPayment = ({
   const [monto, setMonto] = useState(montoUser);
   const [diaPago, setDiaPago] = useState(diaPagoUser);
   const [numFactura, setNumFactura] = useState(numFacturaUser);
-
+  const { paymentsUsers, isLoadingPayments } = useSelector(
+    (state) => state.payments
+  );
+  const dispatch = useDispatch();
   const btnRef = React.useRef();
   useEffect(() => {
     if (montoUser && conceptoUser && diaPagoUser && numFacturaUser) {
@@ -38,6 +43,22 @@ export const EditPayment = ({
     }
   }, [montoUser, conceptoUser, diaPagoUser, numFacturaUser]);
 
+  const onEdit = () => {
+    const newArr = paymentsUsers.map((payment) => {
+      if (payment.concepto === conceptoUser) {
+        return {
+          concepto,
+          ["día de pago"]: diaPago,
+          monto,
+          numFactura,
+        };
+      }
+      return payment;
+    });
+    console.log(newArr);
+    dispatch(listPayments(newArr));
+    console.log("Editandooo", monto);
+  };
   return (
     <>
       {/* <Button ref={btnRef} colorScheme="teal" onClick={onOpen}>
@@ -122,7 +143,9 @@ export const EditPayment = ({
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancelar
             </Button>
-            <Button colorScheme="blue">Guardar</Button>
+            <Button colorScheme="blue" onClick={onEdit}>
+              Guardar
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

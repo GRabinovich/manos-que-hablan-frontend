@@ -1,5 +1,6 @@
 "use client";
 import {
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -12,10 +13,11 @@ import { Stack, Button, useColorModeValue } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-import { EditPayment } from "@/components/Navbar/EditPayment";
-import { DeletePayment } from "@/components/Navbar/DeletePayment";
+import { EditPayment } from "@/components/Payments/EditPayment";
+import { DeletePayment } from "@/components/Payments/DeletePayment";
 import { useDispatch, useSelector } from "react-redux";
 import { listPayments, updateIsLoading } from "@/redux/features/paymentsSlice";
+import { ListPayments } from "@/components/Payments/ListPayments";
 
 const feikData = [
   {
@@ -54,6 +56,54 @@ const feikData = [
     ["día de pago"]: "19/07/2024",
     numFactura: 8,
   },
+  {
+    concepto: 38,
+    monto: 6300,
+    ["día de pago"]: "29/07/2024",
+    numFactura: 9,
+  },
+  {
+    concepto: 48,
+    monto: 16300,
+    ["día de pago"]: "29/12/2024",
+    numFactura: 10,
+  },
+  {
+    concepto: 50,
+    monto: 0,
+    ["día de pago"]: "2/12/2024",
+    numFactura: 11,
+  },
+  {
+    concepto: 51,
+    monto: 4560,
+    ["día de pago"]: "12/05/2024",
+    numFactura: 12,
+  },
+  {
+    concepto: 52,
+    monto: 5560,
+    ["día de pago"]: "15/05/2024",
+    numFactura: 13,
+  },
+  {
+    concepto: 57,
+    monto: 15560,
+    ["día de pago"]: "25/07/2024",
+    numFactura: 14,
+  },
+  {
+    concepto: 58,
+    monto: 15560,
+    ["día de pago"]: "25/07/2024",
+    numFactura: 14,
+  },
+  {
+    concepto: 59,
+    monto: 25560,
+    ["día de pago"]: "23/07/2024",
+    numFactura: 16,
+  },
 ];
 export default function PagosPage() {
   const [open, setOpen] = useState(false);
@@ -62,6 +112,7 @@ export default function PagosPage() {
   const [monto, setMonto] = useState("");
   const [diaPago, setDiaPago] = useState("");
   const [numFactura, setNumFactura] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { paymentsUsers, isLoadingPayments } = useSelector(
     (state) => state.payments
   );
@@ -95,123 +146,134 @@ export default function PagosPage() {
     setOpenDelete(!openDelete);
     console.log("Eliminando", concepto);
   };
+  const onEdit = () => {
+    console.log("Editandooo");
+  };
+
   useEffect(() => {
     if (!isLoadingPayments) {
       dispatch(listPayments(feikData));
       dispatch(updateIsLoading(!isLoadingPayments));
     }
   }, []);
+  useEffect(() => {
+    setOpen(false);
+  }, [paymentsUsers]);
+
+  /* 
+  {isLoadingPayments ? (
+        "listo"
+      ) : (
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      )}
+
+  */
 
   return (
-    <div
-      style={{
-        backgroundColor: "",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "40px",
-          margin: "2rem 0 2rem 0",
-          fontWeight: "500",
-          textAlign: "start",
-          width: "100%",
-        }}
-      >
-        Pagos
-      </p>
-
-      <EditPayment
-        isOpenWin={open}
-        onClose={onClose}
-        montoUser={monto}
-        conceptoUser={concepto}
-        diaPagoUser={diaPago}
-        numFacturaUser={numFactura}
-      />
-      <DeletePayment
-        isOpenWin={openDelete}
-        onClose={onCloseDelete}
-        conceptoUser={concepto}
-        onConfirm={onConfirm}
-      />
-      <TableContainer
-        style={{
-          width: "100%",
-        }}
-      >
-        <Table
-          size="sm"
+    <>
+      {isLoadingPayments ? (
+        <div
           style={{
+            backgroundColor: "",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
             width: "100%",
           }}
         >
-          <Thead>
-            <Tr>
-              <Th style={{ textAlign: "center", width: "400px" }}>Concepto</Th>
-              <Th style={{ textAlign: "center", width: "400px" }}>Monto</Th>
-              <Th style={{ textAlign: "center", width: "400px" }}>
-                Día de pago
-              </Th>
-              <Th style={{ textAlign: "center", width: "400px" }}>
-                Nro Factura
-              </Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {paymentsUsers.map((data, i) => (
-              <Tr key={i}>
-                <Td style={{ textAlign: "center" }}>{data.concepto}</Td>
-                <Td style={{ textAlign: "center" }}>{data.monto}</Td>
-                <Td style={{ textAlign: "center" }}>{data["día de pago"]}</Td>
-                <Td style={{ textAlign: "center" }}>{data.numFactura}</Td>
-                <Td
-                  style={{
-                    display: "flex",
-                    width: "200px",
-                    gap: "10px",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Button
-                    colorScheme="blue"
-                    onClick={() =>
-                      isOpen(
-                        i,
-                        data.monto,
-                        data.concepto,
-                        data["día de pago"],
-                        data.numFactura
-                      )
-                    }
-                  >
-                    <EditIcon boxSize={5} />
-                  </Button>
+          <p
+            style={{
+              fontSize: "40px",
+              margin: "2rem 0 2rem 0",
+              fontWeight: "500",
+              textAlign: "start",
+              width: "100%",
+            }}
+          >
+            Pagos
+          </p>
 
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => isOpenDelete(data.concepto)}
-                  >
-                    <DeleteIcon boxSize={5} />
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
-            {/* {payments.map((payment) => (
-              <Tr>
-                <Td>{payment.concept}</Td>
-                <Td>{payment.amount}</Td>
-                <Td>{payment.payday}</Td>
-                <Td>{payment.billing}</Td>
-              </Tr>
-            ))} */}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </div>
+          <>
+            <EditPayment
+              isOpenWin={open}
+              onClose={onClose}
+              montoUser={monto}
+              conceptoUser={concepto}
+              diaPagoUser={diaPago}
+              numFacturaUser={numFactura}
+            />
+            <DeletePayment
+              isOpenWin={openDelete}
+              onClose={onCloseDelete}
+              conceptoUser={concepto}
+              onConfirm={onConfirm}
+            />
+            <TableContainer
+              style={{
+                width: "100%",
+              }}
+            >
+              <Table
+                size="sm"
+                style={{
+                  width: "100%",
+                }}
+              >
+                <Thead>
+                  <Tr>
+                    <Th style={{ textAlign: "center", width: "400px" }}>
+                      Concepto
+                    </Th>
+                    <Th style={{ textAlign: "center", width: "400px" }}>
+                      Monto
+                    </Th>
+                    <Th style={{ textAlign: "center", width: "400px" }}>
+                      Día de pago
+                    </Th>
+                    <Th style={{ textAlign: "center", width: "400px" }}>
+                      Nro Factura
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <ListPayments
+                    paymentsUsers={paymentsUsers}
+                    isOpen={isOpen}
+                    isOpenDelete={isOpenDelete}
+                  />
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </>
+        </div>
+      ) : (
+        <div
+          style={{
+            backgroundColor: "",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100vh",
+          }}
+        >
+          <Spinner
+            thickness="5px"
+            speed="0.85s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+          />
+        </div>
+      )}
+    </>
   );
 }
