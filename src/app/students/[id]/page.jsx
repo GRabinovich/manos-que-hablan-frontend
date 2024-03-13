@@ -169,7 +169,7 @@ export default function Student({ params }) {
   return (
     <ChakraProvider>
       <>
-        <Navbar />
+        {/* <Navbar /> */}
         <main>
           <h1
             style={{
